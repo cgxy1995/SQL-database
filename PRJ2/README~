@@ -1,0 +1,4 @@
+please read this file before starting grading
+1.please execute fun.sql first because it contains types that are dependencies of some other things.
+2.you might see 'Warning: Function created with compilation errors.', but there is actually no error. Nothing will be affected.
+3.I am not sure the meaning of 'current borrowers' list' in Procedure #1. I just print all borrowers in the ISSUE table;

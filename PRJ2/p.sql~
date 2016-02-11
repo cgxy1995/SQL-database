@@ -1,0 +1,59 @@
+/*
+insert into books(book_id, book_title, author_id, year_of_publication, edition, status)
+values(1,'data management',1,1991,1,'not charged');
+insert into books(book_id, book_title, author_id, year_of_publication, edition, status)
+values(2,'data management',1,1993,2,'not charged');
+insert into books(book_id, book_title, author_id, year_of_publication, edition, status)
+values(3,'data management',1,2000,3,'not charged');
+insert into books(book_id, book_title, author_id, year_of_publication, edition, status)
+values(4,'calculus 1',2,1994,6,'not charged');
+insert into books(book_id, book_title, author_id, year_of_publication, edition, status)
+values(5,'calculus 2',2,1994,6,'not charged');
+insert into books(book_id, book_title, author_id, year_of_publication, edition, status)
+values(6,'calculus 3',2,1994,6,'not charged');
+insert into books(book_id, book_title, author_id, year_of_publication, edition, status)
+values(7,'IEEE Multimedia',4,2005,1,'not charged');
+insert into books(book_id, book_title, author_id, year_of_publication, edition, status)
+values(8,'Data Structure',5,1997,4,'not charged');
+insert into books(book_id, book_title, author_id, year_of_publication, edition, status)
+values(9,'Mis management',1,2000,3,'not charged');
+insert into books(book_id, book_title, author_id, year_of_publication, edition, status)
+values(10,'Xiyouji',7,1345,1,'not charged');
+insert into books(book_id, book_title, author_id, year_of_publication, edition, status)
+values(11,'Shendiaoxialv',6,1972,1,'not charged');
+
+
+
+insert into author(author_id, name)
+values(1,'C.J.Dates');
+insert into author(author_id, name)
+values(2,'H.Anton');
+insert into author(author_id, name)
+values(3,'Oracle Press');
+insert into author(author_id, name)
+values(4,'IEEE');
+insert into author(author_id, name)
+values(5,'W.Gates');
+insert into author(author_id, name)
+values(6,'Jin yong');
+insert into author(author_id, name)
+values(7,'Wu Chengen');
+
+insert into borrower(borrower_id,name,status)
+values(1,'Han Meimei','student');
+insert into borrower(borrower_id,name,status)
+values(2,'Li Lei','student');
+insert into borrower(borrower_id,name,status)
+values(3,'Meyer','faculty');
+insert into borrower(borrower_id,name,status)
+values(4,'Giwan','faculty');
+insert into borrower(borrower_id,name,status)
+values(5,'Carson','student');
+*/
+
+select *
+from books;
+select *
+from author;
+select *
+from borrower;

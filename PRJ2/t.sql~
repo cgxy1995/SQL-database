@@ -1,0 +1,10 @@
+create trigger trg_charge after insert on issue
+for each row;
+--declare charged;
+begin
+--charged:='charged'
+update books
+set books.status='charged'
+where books.book_id=new.book_id;
+end;
+/

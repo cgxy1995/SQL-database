@@ -1,0 +1,169 @@
+create or replace procedure pro_print_borrower
+is
+cursor issue_cur is
+select *
+from issue;
+issue_var issue_cur%rowtype;
+bname varchar2(20);
+bookname varchar2(50);
+daydiff integer;
+first1 number;
+second1 number;
+third integer;
+forth integer;
+begin
+	DBMS_OUTPUT.PUT_LINE(rpad('Borrower Name',30)||rpad('Book Title',50)||rpad('<=5 days',11)||rpad('<=10 days',11)||rpad('<= 15days',11)||rpad('>15 days',11));
+	DBMS_OUTPUT.PUT_LINE(' -----------------------------'||' -------------------------------------------------'||' ----------'||' ----------'||' ----------'||' ----------');
+   for issue_var in issue_cur
+       loop
+           select  B.name into bname
+	   from borrower B
+	   where issue_var.borrower_id=B.borrower_id;
+	   select B.book_title into bookname
+	   from books B
+	   where B.book_id=issue_var.book_id;
+	   if(issue_var.return_date is null) then
+	   daydiff := current_date - issue_var.issue_date;
+	   first1 := null; 
+	   second1 := null;
+	   third := null;
+	   forth := null;
+	   if (daydiff<=5) then
+	   first1 := daydiff;
+	   DBMS_OUTPUT.PUT_LINE(rpad(bname,30)||rpad(bookname,50)||rpad('*',7)||first1);
+	   elsif(daydiff<=10 and daydiff>5)then
+	   second1 := daydiff;
+	   DBMS_OUTPUT.PUT_LINE(rpad(bname,30)||rpad(bookname,50)||rpad('*',18)||second1);
+	   elsif(daydiff<=15 and daydiff>10)then
+	   third := daydiff;
+	   DBMS_OUTPUT.PUT_LINE(rpad(bname,30)||rpad(bookname,50)||rpad('*',29)||third);
+	   elsif(daydiff > 15)then
+	   forth := daydiff;
+	   DBMS_OUTPUT.PUT_LINE(rpad(bname,30)||rpad(bookname,50)||rpad('*',40)||forth);
+	   end if;     
+           end if;
+       end loop;
+end;
+/
+create or replace procedure pro_print_fine(today in date)
+is
+cursor issue_cur is
+select *
+from issue;
+issue_var issue_cur%rowtype;
+diff1 integer;
+diff2 integer;
+fine number;
+name varchar2(30);
+begin
+DBMS_OUTPUT.PUT_LINE('borrower_id | book_id | issue_date | fine amount');
+   for issue_var in issue_cur
+       loop
+           fine:=0;
+	   select B.name into name
+	   from borrower B
+	   where B.borrower_id=issue_var.borrower_id;
+           diff1:=today-issue_var.issue_date;
+	   diff2:=issue_var.return_date-issue_var.issue_date;
+           if(issue_var.return_date is null) then
+	      if(diff1>5) then
+	         fine:=(diff1-5)*5;
+		 DBMS_OUTPUT.PUT_LINE(name||' borrowed book id '||issue_var.book_id||' on '||issue_var.issue_date||' and needs to pay fine $'||fine);
+		 --DBMS_OUTPUT.PUT_LINE(name||'         '||issue_var.book_id||'  '||issue_var.issue_date||'          '||fine);
+	      end if;
+	   else
+	      if(diff2>5) then
+	         fine:=(diff2-5)*5;
+		 DBMS_OUTPUT.PUT_LINE(name||' borrowed book id '||issue_var.book_id||' on '||issue_var.issue_date||' and needs to pay fine $'||fine);
+		 --DBMS_OUTPUT.PUT_LINE(name||'         '||issue_var.book_id||'  '||issue_var.issue_date||'          '||fine);
+	      end if;
+	   end if;
+	   
+       end loop;
+   --DBMS_OUTPUT.PUT_LINE(to_char(today,'YYYY'));
+   --DBMS_OUTPUT.PUT_LINE(to_char(to_date('DEC','MON'),'MM'));
+end;
+/
+
+create or replace procedure pro_listborr_mon(borrower_id2 in number, month in varchar2)
+is
+cursor issue_cur is
+select *
+from issue;
+issue_var issue_cur%rowtype;
+themonth date;
+thatmonth date;
+bname varchar2(30);
+bookname varchar2(50);
+begin
+   themonth:=to_date(month,'MM');
+   select B.name into bname
+	   from borrower B
+	   where B.borrower_id=borrower_id2;
+   DBMS_OUTPUT.PUT_LINE(rpad('borrower_id',12)||lpad('borrower_name',30)||lpad('book_id',8)||lpad('book_title',50)||lpad('issue_date',12)||lpad('return_date',12));
+   for issue_var in issue_cur
+       loop
+           --DBMS_OUTPUT.PUT_LINE('borrower ',borrower_id);
+           thatmonth:=to_date(to_char(issue_var.issue_date,'MON'),'MM');
+           if(issue_var.borrower_id=borrower_id2 and thatmonth=themonth) then
+	       select B.book_title into bookname
+	       from books B
+	       where B.book_id=issue_var.book_id;
+	       DBMS_OUTPUT.PUT_LINE(rpad(('#    '||to_char(borrower_id2)),12)||lpad(bname,30)||lpad(('#    '||to_char(issue_var.book_id)),8)||lpad(bookname,50)||lpad(issue_var.issue_date,12)||lpad(issue_var.return_date,12));
+	   end if;
+       end loop;
+end;
+/
+create or replace procedure pro_listborr
+is
+cursor issue_cur is
+select *
+from issue;
+issue_var issue_cur%rowtype;
+bname varchar2(30);
+begin
+   DBMS_OUTPUT.PUT_LINE(rpad('borrower_name',30)||lpad('book_id',8)||lpad('issue_date',12));
+   for issue_var in issue_cur
+       loop
+           if(issue_var.return_date is null) then
+	      select B.name into bname
+	      from borrower B
+	      where B.borrower_id=issue_var.borrower_id;
+	      DBMS_OUTPUT.PUT_LINE(rpad(bname,30)||lpad(('#   '||to_char(issue_var.book_id)),8)||lpad(issue_var.issue_date,12));
+           end if;
+       end loop;
+end;
+/
+
+create or replace procedure pro_list_popular
+is
+returntable btable;
+authorname varchar2(30);
+authorid number;
+edition number;
+bookname varchar2(50);
+type months is table of varchar2(3);
+mymonths months;
+begin
+   mymonths := months('JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC');
+   for month in mymonths.first..mymonths.last loop
+   returntable := fun_most_popular(month);
+   for i in 1..returntable.count loop
+      select B.book_title into bookname
+      from books B
+      where B.book_id=returntable(i).id;
+      select count(*) into edition
+      from books B
+      where B.book_title=bookname;
+      select B.author_id into authorid
+      from books B
+      where B.book_id=returntable(i).id;
+      select A.name into authorname
+      from author A
+      where A.author_id=authorid;
+      DBMS_OUTPUT.PUT_LINE('In '||month||'-'||returntable(i).year||' the most popular book is '||bookname||' with '||edition||' editions written by '|| authorname);
+   end loop;
+   end loop;
+end;
+/
+

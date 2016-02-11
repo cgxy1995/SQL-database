@@ -1,0 +1,24 @@
+@d
+@c
+@p
+@fun
+EXEC DBMS_OUTPUT.PUT_LINE('functions created!');
+@t
+@pr
+EXEC DBMS_OUTPUT.PUT_LINE('triggers created!');
+declare
+issued number;
+begin
+issued := fun_issue_book(1,13,TO_DATE('20/10/12','DD/MM/YY'));
+issued := fun_issue_book(2,10,TO_DATE('20/10/2012','DD/MM/YYYY'));
+issued := fun_issue_book(3,11,TO_DATE('20/10/2012','DD/MM/YYYY'));
+issued := fun_issue_book(4,12,TO_DATE('20/10/2012','DD/MM/YYYY'));
+issued := fun_issue_book(5,15,TO_DATE('20/10/2012','DD/MM/YYYY'));
+issued := fun_issue_book(6,14,TO_DATE('20/10/2012','DD/MM/YYYY'));
+issued := fun_issue_anyedition(8,'ARCHITECTURE','CLOIS KICKLIGHTER',TO_DATE('21/10/2013','DD/MM/YYYY'));
+end;
+/
+select *
+from issue;
+select *
+from pending_request;
